@@ -1,0 +1,21 @@
+# requirements.txt for FastAPI Auth Backend (Own Tables)
+
+fastapi==0.115.2
+uvicorn[standard]==0.30.0
+
+# Database & ORM
+sqlalchemy[asyncio]==2.0.32
+psycopg[binary,pool]
+alembic==1.13.2
+
+# Security & Auth
+passlib[bcrypt]==1.7.4
+bcrypt==4.2.0
+PyJWT==2.9.0
+
+# Utilities
+python-dotenv==1.0.1
+pydantic[email]==2.9.2
+email-validator==2.2.0
+httpx==0.27.2
+
