@@ -1,3 +1,4 @@
+pydantic-settings
 # requirements.txt for FastAPI Auth Backend (Own Tables)
 
 fastapi==0.115.2
