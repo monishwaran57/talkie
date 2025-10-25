@@ -10,6 +10,9 @@ async def get_db():
         "dbname=moni user=plank password='Plank@123' host=localhost port=5432"
     )
 
+    # Set the row factory for the connection
+    conn.row_factory = dict_row
+
     try:
         async with conn.cursor() as cur:
             yield cur
