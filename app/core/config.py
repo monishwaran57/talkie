@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     ID_TOKEN_EXPIRE_MINUTES: int = 15 * 60  # 15 minutes
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
+    ADMIN_EMAIL=str
+    AWS_ACCESS_KEY: str
+    AWS_SECRET_KEY: str
+
     # class Config:
     #     env_file = ".env"
 

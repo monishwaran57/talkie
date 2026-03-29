@@ -9,6 +9,7 @@ from app.core.security import (
     verify_password, generate_refresh_token, hash_token,
     create_access_token, create_id_token)
 from app.core.config import settings
+from app.utils.emailer import send_email
 
 router = APIRouter()
 
@@ -39,6 +40,8 @@ async def request_email_verification(payload: EmailRequest, background: Backgrou
         )
 
         background.add_task(print, f"[DEBUG] OTP for {payload.email} is {otp}")
+
+        send_email(to_address=payload.email, subject="EMAIL Verification OTP", body=f"For TALKIE : Your email verification code is {otp}")
 
         return {"message": "OTP sent successfully"}
 
