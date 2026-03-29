@@ -1,7 +1,7 @@
 import boto3
 from app.core.config import settings
 
-ses_client = boto3.client("ses", region_name="eu-west-2", aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET_KEY)
+ses_client = boto3.client("ses", region_name="ap-south-1", aws_access_key_id=settings.AWS_ACCESS_KEY, aws_secret_access_key=settings.AWS_SECRET_KEY)
 
 def send_email(to_address: str, subject: str, body: str, is_html: bool = False):
     message_body = {"Html": {"Data": body, "Charset": "UTF-8"}} if is_html else {"Text": {"Data": body, "Charset": "UTF-8"}}
