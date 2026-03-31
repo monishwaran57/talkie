@@ -1,10 +1,32 @@
 # app/main.py
-from fastapi import FastAPI
-from app.api.routes import auth
+from fastapi import FastAPI, Depends
+from app.api.routes import auth, contacts
+from app.api.routes.contacts import contacts_router
+from contextlib import asynccontextmanager
+from motor.motor_asyncio import AsyncIOMotorClient
+from app.db.mongo import mongo
+from app.core.config import settings
+from app.core.security import verify_and_decode_access_token
 
-app = FastAPI(title="Auth API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 🔹 Startup
+    mongo.client = AsyncIOMotorClient(settings.MONGO_URI)
+    mongo.db = mongo.client[settings.MONGO_DB_NAME]
+
+    print("✅ MongoDB connected")
+
+    yield
+
+    # 🔹 Shutdown
+    mongo.client.close()
+    print("❌ MongoDB disconnected")
+
+app = FastAPI(title="Auth API", lifespan=lifespan)
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(contacts_router, prefix="/contacts", tags=["contacts"], dependencies=[Depends(verify_and_decode_access_token)])
 
 
 import uvicorn

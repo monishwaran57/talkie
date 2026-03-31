@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY: str
     AWS_SECRET_KEY: str
 
+    MONGO_URI: str
+    MONGO_DB_NAME: str
+
     # class Config:
     #     env_file = ".env"
 

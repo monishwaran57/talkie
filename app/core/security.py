@@ -5,13 +5,18 @@ import time
 import jwt
 from datetime import datetime, timedelta
 from app.core.config import settings
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+
+http_bearer = HTTPBearer()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-def verify_and_decode_access_token(token: str):
+def verify_and_decode_access_token(request: Request, credentials: HTTPAuthorizationCredentials = Depends(http_bearer)):
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        request.state.user = dict(payload)
         return payload
 
     except jwt.ExpiredSignatureError:
