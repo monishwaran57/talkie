@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Depends
 from app.api.routes import auth, contacts
 from app.api.routes.contacts import contacts_router
+from app.api.routes.messages import websocket_route
 from contextlib import asynccontextmanager
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.db.mongo import mongo
@@ -27,6 +28,7 @@ app = FastAPI(title="Auth API", lifespan=lifespan)
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(contacts_router, prefix="/contacts", tags=["contacts"], dependencies=[Depends(verify_and_decode_access_token)])
+app.include_router(websocket_route, prefix="/ws", tags=["Message"])
 
 
 import uvicorn
