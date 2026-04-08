@@ -10,6 +10,7 @@ from app.core.security import (
     create_access_token, create_id_token)
 from app.core.config import settings
 from app.utils.emailer import send_email
+from botocore.exceptions import ClientError
 
 router = APIRouter()
 
@@ -39,9 +40,20 @@ async def request_email_verification(payload: EmailRequest, background: Backgrou
             (str(uuid4()), payload.email, otp_hash, salt, expires_at)
         )
 
-        background.add_task(print, f"[DEBUG] OTP for {payload.email} is {otp}")
+        print(f"[DEBUG] OTP for {payload.email} is {otp}")
 
-        send_email(to_address=payload.email, subject="EMAIL Verification OTP", body=f"For TALKIE : Your email verification code is {otp}")
+        try:
+
+            send_email(to_address=payload.email, subject="EMAIL Verification OTP", body=f"For TALKIE : Your email verification code is {otp}")
+        except ClientError as e:
+            error_code = e.response["Error"]["Code"]
+            error_message = e.response["Error"]["Message"]
+
+            if error_code == "MessageRejected":
+                print("❌ Email rejected:", error_message)
+            else:
+                print("❌ Unexpected error:", error_message)
+
 
         return {"message": "OTP sent successfully"}
 
