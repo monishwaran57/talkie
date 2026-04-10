@@ -74,13 +74,13 @@ async def websocket_endpoint(websocket: WebSocket, db=Depends(get_mongo_db)):
         while True:
             data = await websocket.receive_json()
 
-            convo_id = data["convo_id"]
+            receiver_id = data["receiver_id"]
             message = data["message"]
 
             # 1. Save to MongoDB
             msg_doc = {
                 "sender_id": user_id,
-                "convo_id": convo_id,
+                "receiver_id": receiver_id,
                 "message": message,
                 "timestamp": datetime.now(),
                 "status": "sent"
@@ -89,12 +89,8 @@ async def websocket_endpoint(websocket: WebSocket, db=Depends(get_mongo_db)):
             print(".......messge doc", msg_doc)
             await db.messages.insert_one(msg_doc)
 
-            convo = await db.convos.find_one({"_id": ObjectId(convo_id)}, {"_id": 0})
-
-            print(".....convo", convo)
-
             # 2. Send to receiver if online
-            await manager.send_personal_message(convo["receiver_id"], msg_doc)
+            await manager.send_personal_message(receiver_id, msg_doc)
 
     except:
         manager.disconnect(user_id)
