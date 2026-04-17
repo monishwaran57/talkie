@@ -15,6 +15,6 @@ async def get_messages(request: Request, contact_user_id: str, db=Depends(get_mo
                                                 "receiver_id": contact_user_id},
                                                {"receiver_id": user_id,
                                                 "sender_id": contact_user_id}
-                                           ]}, {"_id": 0}).to_list(length=25)
+                                           ]}, {"_id": 0}).to_list()
 
     return messages
