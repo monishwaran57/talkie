@@ -8,7 +8,7 @@ from contextlib import asynccontextmanager
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.db.mongo import mongo
 from app.core.config import settings
-from app.core.security import verify_and_decode_access_token
+from app.core.cognito_auth import verify_and_decode_access_token
 
 
 @asynccontextmanager

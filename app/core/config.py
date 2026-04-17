@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     MONGO_URI: str
     MONGO_DB_NAME: str
 
+    COGNITO_REGION: str
+    COGNITO_USER_POOL_ID: str
+    COGNITO_APP_CLIENT_ID: str
+
     # class Config:
     #     env_file = ".env"
 

@@ -11,7 +11,7 @@ async def get_contacts(request: Request, db=Depends(get_mongo_db)):
 
     user_id = user_data["sub"]
 
-    print("userIidiid", user_id)
+    print("userIidiid.....................", user_id)
     contacts_cursor = db.contacts.find({"user_id": user_id})
 
     contacts = [{**contact, "_id": str(contact["_id"])} async for contact in contacts_cursor]
