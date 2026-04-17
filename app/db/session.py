@@ -7,7 +7,7 @@ from app.core.config import settings
 @asynccontextmanager
 async def get_db():
     conn = await psycopg.AsyncConnection.connect(
-        "dbname=moni user=plank password='Plank@123' host=localhost port=5432"
+        f"dbname={settings.SQL_DB_NAME} user={settings.SQL_DB_USER} password='{settings.SQL_DB_PASSWORD}' host=localhost port=5432"
     )
 
     # Set the row factory for the connection

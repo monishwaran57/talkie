@@ -6,6 +6,9 @@ load_dotenv()
 
 class Settings(BaseSettings):
     DATABASE_URL: str
+    SQL_DB_NAME: str
+    SQL_DB_USER: str
+    SQL_DB_PASSWORD: str
 
     JWT_SECRET: str
     JWT_ALGORITHM: str = "HS256"
