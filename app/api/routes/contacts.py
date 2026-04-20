@@ -19,22 +19,20 @@ async def get_contacts(request: Request, db=Depends(get_mongo_db)):
     return contacts
 
 @contacts_router.get("/add_contact/{contact_email}")
-async def add_contact(request: Request, contact_email:str, db=Depends(get_mongo_db), auth_db=Depends(get_db)):
+async def add_contact(request: Request, contact_email:str, db=Depends(get_mongo_db)):
     user_data = request.state.user
     user_id = user_data["sub"]
 
-    async with auth_db as cursor:
-        await cursor.execute("SELECT id, full_name FROM users WHERE email = %s", (contact_email,))
-        row = await cursor.fetchone()
-        if not row:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="contact email not found, Invite him to waranapp")
+    existing_user =  await db.users.find_one({"email": contact_email})
+    if not existing_user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="contact email not found, Invite him to waranapp")
 
 
-    new_contact = await db.contacts.insert_one({"contact_user_id": str(row["id"]),
+    new_contact = await db.contacts.insert_one({"contact_user_id": existing_user["cognito_id"],
                                                 "user_id": user_id,
                                                 "contact_email": contact_email,
-                                                "contact_name": row["full_name"],
+                                                "contact_name": existing_user["name"],
                                                 "created_at": datetime.now()})
 
     return {"new_contact_id": str(new_contact.inserted_id),
-            "new_contact_name": row["full_name"]}
+            "new_contact_name": existing_user["name"]}
