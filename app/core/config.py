@@ -5,18 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings(BaseSettings):
-    DATABASE_URL: str
-    SQL_DB_NAME: str
-    SQL_DB_USER: str
-    SQL_DB_PASSWORD: str
-
-    JWT_SECRET: str
-    JWT_ALGORITHM: str = "HS256"
-
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 300 * 60  # 15 minutes in seconds
-    ID_TOKEN_EXPIRE_MINUTES: int = 15 * 60  # 15 minutes
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 30
-
     ADMIN_EMAIL:str
     AWS_ACCESS_KEY: str
     AWS_SECRET_KEY: str

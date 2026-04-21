@@ -1,7 +1,6 @@
 from datetime import datetime
 from fastapi import APIRouter, Request, HTTPException, Depends, status
 from app.db.mongo import get_mongo_db
-from app.db.session import get_db
 
 contacts_router = APIRouter()
 
@@ -27,12 +26,26 @@ async def add_contact(request: Request, contact_email:str, db=Depends(get_mongo_
     if not existing_user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="contact email not found, Invite him to waranapp")
 
+    result = await db.contacts.find_one_and_update(
+        {
+            "user_id": user_id,
+            "contact_email": contact_email
+        },
+        {
+            "$setOnInsert": {
+                "contact_user_id": existing_user["cognito_id"],
+                "contact_name": existing_user["name"],
+                "created_at": datetime.now()
+            }
+        },
+        upsert=True,
+        return_document=False  # Return original document if exists, None if inserted
+    )
 
-    new_contact = await db.contacts.insert_one({"contact_user_id": existing_user["cognito_id"],
-                                                "user_id": user_id,
-                                                "contact_email": contact_email,
-                                                "contact_name": existing_user["name"],
-                                                "created_at": datetime.now()})
+    if result is not None:
+        # Document already existed
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail="contact already exists")
 
-    return {"new_contact_id": str(new_contact.inserted_id),
+    return {"new_contact_cognito_id": existing_user["cognito_id"],
             "new_contact_name": existing_user["name"]}
